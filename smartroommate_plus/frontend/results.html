@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Roommate Matches - SmartRoommate+</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">🏠 SmartRoommate+</h1>
+            <p class="tagline">Your Perfect Matches</p>
+        </header>
+
+        <main class="main-content">
+            <div class="results-container">
+                <div class="results-header">
+                    <h2>Your Roommate Matches</h2>
+                    <p class="results-description">Based on your profile, here are your best matches:</p>
+                </div>
+
+                <div id="matchesContainer" class="matches-container">
+                    <!-- Matches will be populated by JavaScript -->
+                </div>
+
+                <div class="results-actions">
+                    <button onclick="window.location.href='/'" class="btn-secondary">
+                        Create New Profile
+                    </button>
+                    <button onclick="window.location.href='/api/profiles'" class="btn-primary">
+                        View All Profiles
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+    <script>
+        // Display matches when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            displayMatches();
+        });
+
+        function displayMatches() {
+            const matchesContainer = document.getElementById('matchesContainer');
+            const matches = JSON.parse(sessionStorage.getItem('matches') || '[]');
+            
+            if (matches.length === 0) {
+                matchesContainer.innerHTML = `
+                    <div class="no-matches">
+                        <h3>No matches found</h3>
+                        <p>Try adjusting your preferences or check back later for new profiles.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            matchesContainer.innerHTML = matches.map(match => `
+                <div class="match-card">
+                    <div class="match-header">
+                        <div class="match-score">
+                            <span class="score-number">${match.compatibility_score}%</span>
+                            <span class="score-label">Match</span>
+                        </div>
+                        <div class="match-info">
+                            <h3 class="match-name">${match.user.name}</h3>
+                            <p class="match-occupation">${match.user.occupation}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="match-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Age:</span>
+                            <span class="detail-value">${match.user.age} years old</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Location:</span>
+                            <span class="detail-value">${match.user.city}, ${match.user.zip_code}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Budget:</span>
+                            <span class="detail-value">$${match.user.rent_budget_min} - $${match.user.rent_budget_max}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Sleep Schedule:</span>
+                            <span class="detail-value">${match.user.sleep_schedule}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Cleanliness:</span>
+                            <span class="detail-value">${match.user.cleanliness_level}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Noise Tolerance:</span>
+                            <span class="detail-value">${match.user.noise_tolerance}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Pets:</span>
+                            <span class="detail-value">${match.user.pet_preference}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Smoking:</span>
+                            <span class="detail-value">${match.user.smoking_preference}</span>
+                        </div>
+                    </div>
+
+                    <div class="match-lifestyle">
+                        <h4>Hobbies & Interests</h4>
+                        <p>${match.user.hobbies}</p>
+                        
+                        <h4>Lifestyle</h4>
+                        <p>${match.user.lifestyle_description}</p>
+                    </div>
+
+                    <div class="match-badges">
+                        ${match.location_match ? '<span class="badge badge-success">✓ Location Match</span>' : ''}
+                        ${match.budget_match ? '<span class="badge badge-success">✓ Budget Match</span>' : ''}
+                        ${match.distance_miles ? `<span class="badge badge-info">${match.distance_miles} miles away</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
+

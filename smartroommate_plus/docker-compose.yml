@@ -1,0 +1,164 @@
+# Docker Compose configuration for SmartRoommate+ Microservices
+version: '3.8'
+
+services:
+  # Redis for caching and rate limiting
+  redis:
+    image: redis:7-alpine
+    container_name: smartroommate-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # PostgreSQL database
+  postgres:
+    image: postgres:15-alpine
+    container_name: smartroommate-postgres
+    environment:
+      POSTGRES_DB: smartroommate
+      POSTGRES_USER: smartroommate
+      POSTGRES_PASSWORD: smartroommate123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartroommate"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Authentication Service
+  auth-service:
+    build:
+      context: ./services/auth
+      dockerfile: Dockerfile
+    container_name: smartroommate-auth
+    environment:
+      - DATABASE_URL=postgresql://smartroommate:smartroommate123@postgres:5432/smartroommate
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET_KEY=your-super-secret-jwt-key-change-in-production
+      - JWT_EXPIRE_MINUTES=30
+      - SERVICE_NAME=auth-service
+      - SERVICE_PORT=8001
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Profile Service
+  profile-service:
+    build:
+      context: ./services/profile
+      dockerfile: Dockerfile
+    container_name: smartroommate-profile
+    environment:
+      - DATABASE_URL=postgresql://smartroommate:smartroommate123@postgres:5432/smartroommate
+      - REDIS_URL=redis://redis:6379
+      - SERVICE_NAME=profile-service
+      - SERVICE_PORT=8002
+    ports:
+      - "8002:8002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Matching Service
+  matching-service:
+    build:
+      context: ./services/matching
+      dockerfile: Dockerfile
+    container_name: smartroommate-matching
+    environment:
+      - DATABASE_URL=postgresql://smartroommate:smartroommate123@postgres:5432/smartroommate
+      - REDIS_URL=redis://redis:6379
+      - SERVICE_NAME=matching-service
+      - SERVICE_PORT=8003
+    ports:
+      - "8003:8003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./services/gateway
+      dockerfile: Dockerfile
+    container_name: smartroommate-gateway
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET_KEY=your-super-secret-jwt-key-change-in-production
+      - SERVICE_NAME=api-gateway
+      - SERVICE_PORT=8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      profile-service:
+        condition: service_healthy
+      matching-service:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend (Optional - for production)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: smartroommate-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-gateway
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  default:
+    name: smartroommate-network
+

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartRoommate+ - Find Your Perfect Roommate</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">🏠 SmartRoommate+</h1>
+            <p class="tagline">AI-Powered Roommate Matching</p>
+        </header>
+
+        <main class="main-content">
+            <div class="form-container">
+                <h2>Create Your Profile</h2>
+                <p class="form-description">Tell us about yourself and we'll find your perfect roommate match!</p>
+                
+                <form id="profileForm" class="profile-form">
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <h3>Basic Information</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Full Name *</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Age *</label>
+                                <input type="number" id="age" name="age" min="18" max="100" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="gender">Gender *</label>
+                                <select id="gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Non-binary">Non-binary</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="occupation">Occupation *</label>
+                                <input type="text" id="occupation" name="occupation" placeholder="e.g., Software Engineer, Student, Teacher" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="form-section">
+                        <h3>Location</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City *</label>
+                                <input type="text" id="city" name="city" placeholder="e.g., Dallas, New York, Los Angeles" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="zip_code">ZIP Code *</label>
+                                <input type="text" id="zip_code" name="zip_code" placeholder="e.g., 75201" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Budget -->
+                    <div class="form-section">
+                        <h3>Rent Budget</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="rent_budget_min">Minimum Budget ($) *</label>
+                                <input type="number" id="rent_budget_min" name="rent_budget_min" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="rent_budget_max">Maximum Budget ($) *</label>
+                                <input type="number" id="rent_budget_max" name="rent_budget_max" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lifestyle -->
+                    <div class="form-section">
+                        <h3>Lifestyle Preferences</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="sleep_schedule">Sleep Schedule *</label>
+                                <select id="sleep_schedule" name="sleep_schedule" required>
+                                    <option value="">Select Schedule</option>
+                                    <option value="Early Bird">Early Bird (6 AM - 10 PM)</option>
+                                    <option value="Night Owl">Night Owl (12 PM - 2 AM)</option>
+                                    <option value="Flexible">Flexible</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="cleanliness_level">Cleanliness Level *</label>
+                                <select id="cleanliness_level" name="cleanliness_level" required>
+                                    <option value="">Select Level</option>
+                                    <option value="Very Clean">Very Clean</option>
+                                    <option value="Moderately Clean">Moderately Clean</option>
+                                    <option value="Relaxed">Relaxed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="noise_tolerance">Noise Tolerance *</label>
+                                <select id="noise_tolerance" name="noise_tolerance" required>
+                                    <option value="">Select Tolerance</option>
+                                    <option value="Quiet">Quiet</option>
+                                    <option value="Moderate">Moderate</option>
+                                    <option value="Loud OK">Loud OK</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preferences -->
+                    <div class="form-section">
+                        <h3>Preferences</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="pet_preference">Pet Preference *</label>
+                                <select id="pet_preference" name="pet_preference" required>
+                                    <option value="">Select Preference</option>
+                                    <option value="Yes">Yes, I have/want pets</option>
+                                    <option value="No">No pets</option>
+                                    <option value="Either">Either is fine</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="smoking_preference">Smoking Preference *</label>
+                                <select id="smoking_preference" name="smoking_preference" required>
+                                    <option value="">Select Preference</option>
+                                    <option value="Yes">Yes, I smoke</option>
+                                    <option value="No">No smoking</option>
+                                    <option value="Either">Either is fine</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hobbies & Lifestyle -->
+                    <div class="form-section">
+                        <h3>Hobbies & Lifestyle</h3>
+                        <div class="form-group">
+                            <label for="hobbies">Hobbies & Interests *</label>
+                            <textarea id="hobbies" name="hobbies" rows="3" placeholder="e.g., Reading, hiking, cooking, gaming, photography" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="lifestyle_description">Describe Your Lifestyle *</label>
+                            <textarea id="lifestyle_description" name="lifestyle_description" rows="4" placeholder="Tell us about your daily routine, social preferences, and what makes you happy..." required></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Social Media Links (Optional) -->
+                    <div class="form-section">
+                        <h3>Social Media Links (Optional)</h3>
+                        <p class="form-description">Connect your social profiles to help others get to know you better</p>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="instagram_link">Instagram</label>
+                                <input type="url" id="instagram_link" name="instagram_link" placeholder="https://instagram.com/yourusername">
+                            </div>
+                            <div class="form-group">
+                                <label for="facebook_link">Facebook</label>
+                                <input type="url" id="facebook_link" name="facebook_link" placeholder="https://facebook.com/yourusername">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="linkedin_link">LinkedIn</label>
+                                <input type="url" id="linkedin_link" name="linkedin_link" placeholder="https://linkedin.com/in/yourusername">
+                            </div>
+                            <div class="form-group">
+                                <label for="twitter_link">Twitter/X</label>
+                                <input type="url" id="twitter_link" name="twitter_link" placeholder="https://twitter.com/yourusername">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn">
+                            <span class="btn-text">Find My Perfect Roommate</span>
+                            <span class="btn-loading" style="display: none;">Finding matches...</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
